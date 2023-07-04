@@ -1,9 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.RetrofitInMVVM" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.RetrofitInMVVM" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#8BC34A</item>
     </style>
 
     <style name="Theme.RetrofitInMVVM" parent="Base.Theme.RetrofitInMVVM" />
+
+    <style name="ThemeOverlay.AppCompat.SearchView">
+        <item name="android:textColorHint">#DCEDC8</item>
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:textSize" tools:ignore="SpUsage">18dp</item>
+    </style>
 </resources>

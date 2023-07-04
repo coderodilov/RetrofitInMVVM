@@ -1,4 +1,8 @@
 package uz.coderodilov.retrofitinmvvm.repository
+
+import android.os.Handler
+import android.os.Looper
+import androidx.core.os.postDelayed
 import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Callback
@@ -8,63 +12,92 @@ import uz.coderodilov.retrofitinmvvm.model.User
 import uz.coderodilov.retrofitinmvvm.retrofit.ApiService
 import uz.coderodilov.retrofitinmvvm.retrofit.RetrofitClient
 
+
 /* 
 * Created by Coder Odilov on 04/07/2023
 */
 
 class MainRepository {
-    private val list = MutableLiveData<ArrayList<User>>()
-    val deletedUser = MutableLiveData<Int>()
+
+    private val usersList = MutableLiveData<ArrayList<User>>()
+    private val filteredList = MutableLiveData<ArrayList<User>>()
 
     private val api = RetrofitClient.getRetrofit().create(ApiService::class.java)
 
-    fun getList():MutableLiveData<ArrayList<User>> = list
+    fun getUsersList(): MutableLiveData<ArrayList<User>> = usersList
+    fun getFilteredList() : MutableLiveData<ArrayList<User>> = filteredList
 
-    fun getAllUser() : ArrayList<User>{
-        val listOfUsers: ArrayList<User> = ArrayList()
-
+    fun getAllUser() {
         api.getAllUsers().enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                if (response.isSuccessful){
-                    listOfUsers.addAll(response.body() ?: emptyList())
-                    list.postValue(response.body() as ArrayList<User>)
+                if (response.isSuccessful) {
+                    usersList.postValue(response.body() as ArrayList<User>)
                 }
             }
-
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 t.printStackTrace()
             }
         })
 
-        return listOfUsers
     }
 
-    fun deleteUser(userId: String){
-        api.deleteUser(userId).enqueue(object :Callback<BaseResponse>{
+    fun deleteUser(userId: String) {
+        api.deleteUser(userId).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                if (response.isSuccessful){
-                    val index = list.value?.indexOfFirst {
+                if (response.isSuccessful) {
+                    val index = usersList.value?.indexOfFirst {
                         it.id == userId.toInt()
                     }
-                    if (index != null){
-                        deletedUser.postValue(index)
-                        list.value?.removeAt(index)
+                    if (index != null) {
+                        usersList.value?.removeAt(index)
+                        usersList.postValue(usersList.value)
                     }
                 }
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-
+                t.printStackTrace()
             }
         })
     }
 
-    fun createUser(user: User){
-        api.createUser(user).enqueue(object :Callback<BaseResponse>{
-            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+    fun createUser(user: User) {
+        api.createUser(user).enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    val resUser = response.body()!!
+
+                    usersList.value?.add(0,resUser)
+                    usersList.postValue(usersList.value)
+                }
             }
 
-            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                t.printStackTrace()
+            }
+
+        })
+    }
+
+
+    fun updateUser(userId:String, user:User){
+        api.updateUser(userId, user).enqueue(object : Callback<User>{
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+               if (response.isSuccessful){
+                   val resUser = response.body()!!
+
+                   val index = usersList.value!!.indexOfFirst {
+                       it.id == userId.toInt()
+                   }
+
+                   usersList.value!!.removeAt(index)
+                   usersList.value!!.add(index, resUser)
+
+                   usersList.postValue(usersList.value)
+               }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
                t.printStackTrace()
             }
 
@@ -72,17 +105,22 @@ class MainRepository {
     }
 
 
-    fun searchUser(query:String){
-        api.searchUserByName(query).enqueue(object : Callback<List<User>>{
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+    fun searchUser(query: String) {
+       Handler(Looper.getMainLooper()).postDelayed(600){
+            api.searchUserByName(query).enqueue(object : Callback<List<User>> {
+                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                    if (response.isSuccessful){
+                        val resUser = response.body()
+                        filteredList.postValue(resUser as ArrayList<User>)
+                    }
+                }
 
-            }
+                override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                    t.printStackTrace()
+                }
 
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-
-            }
-
-        })
+            })
+        }
     }
 
 }

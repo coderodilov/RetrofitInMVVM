@@ -1,7 +1,6 @@
 package uz.coderodilov.retrofitinmvvm.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import uz.coderodilov.retrofitinmvvm.model.User
 import uz.coderodilov.retrofitinmvvm.repository.MainRepository
@@ -12,13 +11,9 @@ import uz.coderodilov.retrofitinmvvm.repository.MainRepository
 
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
-    fun getDeletedUserStatus():MutableLiveData<Int>{
-        return mainRepository.deletedUser
-    }
-
     fun getAllUsers(): LiveData<ArrayList<User>> {
        mainRepository.getAllUser()
-       return mainRepository.getList()
+       return mainRepository.getUsersList()
     }
 
     fun deleteUser(userId:String){
@@ -27,6 +22,15 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
     fun createUser(user:User){
         mainRepository.createUser(user)
+    }
+
+    fun updateUser(userId:String, user:User){
+        mainRepository.updateUser(userId, user)
+    }
+
+    fun searchUserByName(query:String) : LiveData<ArrayList<User>>{
+        mainRepository.searchUser(query)
+        return mainRepository.getFilteredList()
     }
 
 }

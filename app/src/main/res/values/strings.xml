@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RetrofitInMVVM</string>
+    <string name="get_all_user">Get All User</string>
+    <string name="create_user">Create User</string>
+    <string name="search">Search..</string>
+    <string name="add">Add</string>
 </resources>

@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:layout_marginVertical="12dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_height="60dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGetAllUser"
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="50dp"
-            android:text="Get All User"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="12dp"
-            tools:ignore="ButtonStyle" />
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardUseCompatPadding="true">
 
-        <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchViewUsers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8AC24A"
+                android:textAppearance="@style/ThemeOverlay.AppCompat.SearchView"
+                android:theme="@style/ThemeOverlay.AppCompat.SearchView"
+                app:searchHintIcon="@drawable/round_search_24"
+                app:searchIcon="@drawable/round_search_24" />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/btnPostUser"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="50dp"
-            app:cornerRadius="12dp"
-            android:text="Post User"
-            android:layout_marginStart="12dp"
-            tools:ignore="ButtonStyle" />
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#8BC34A"
+            android:drawableEnd="@drawable/round_person_add_24"
+            android:importantForAccessibility="no"
+            android:text="@string/add"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUsers"
-        android:layout_marginHorizontal="12dp"
+
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/user_item"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUsers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/user_item" />
+
+
+    </FrameLayout>
 
 </LinearLayout>
