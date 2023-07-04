@@ -1,5 +1,6 @@
 package uz.coderodilov.retrofitinmvvm
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,7 +21,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
 
     private lateinit var adapter: UserAdapter
+    private lateinit var list: ArrayList<User>
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -29,21 +32,30 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this,
             Factory(MainRepository()))[MainViewModel::class.java]
 
-        viewModel.listOfUsers.observe(this){
-            adapter = UserAdapter(it)
+        viewModel.getAllUsers().observe(this){
+            list = it
+            adapter = UserAdapter(list)
             binding.rvUsers.adapter = adapter
+
+            adapter.setOnBtnClickListener{ position ->
+                viewModel.deleteUser(list[position].id.toString())
+            }
         }
 
-        viewModel.toastMsg.observe(this){
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        viewModel.getDeletedUserStatus().observe(this){
+            list.removeAt(it)
+            adapter.notifyDataSetChanged()
         }
 
-        binding.btnGetAllUser.setOnClickListener { viewModel.getAllUsers() }
+        binding.btnGetAllUser.setOnClickListener {
+            viewModel.getAllUsers()
+        }
 
-        binding.btnPostUser.setOnClickListener { showUserPostDialog() }
+        binding.btnPostUser.setOnClickListener {
+            showUserPostDialog()
+        }
 
     }
-
 
     private fun showUserPostDialog() {
         val dialog = Dialog(this)

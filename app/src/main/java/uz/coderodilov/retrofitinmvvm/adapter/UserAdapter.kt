@@ -13,6 +13,8 @@ import uz.coderodilov.retrofitinmvvm.model.User
 class UserAdapter(private val list: ArrayList<User>) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
+    private lateinit var onBtnDeleteClicked: OnBtnDeleteClicked
+
     inner class UserViewHolder(private val binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(user: User) {
@@ -21,6 +23,10 @@ class UserAdapter(private val list: ArrayList<User>) :
             binding.tvUserName.text = user.name
             binding.tvUserStatus.text = user.status
             binding.tvUserGender.text = user.gender
+
+            binding.btnDelete.setOnClickListener {
+                onBtnDeleteClicked.setOnBtnClickListener(adapterPosition)
+            }
         }
     }
 
@@ -35,4 +41,11 @@ class UserAdapter(private val list: ArrayList<User>) :
         holder.onBind(list[position])
     }
 
+    fun interface OnBtnDeleteClicked{
+        fun setOnBtnClickListener(position: Int)
+    }
+
+    fun setOnBtnClickListener(listener:OnBtnDeleteClicked){
+        onBtnDeleteClicked = listener
+    }
 }
