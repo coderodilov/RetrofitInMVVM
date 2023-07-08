@@ -149,11 +149,12 @@ class MainActivity : AppCompatActivity() {
     private fun onBackPressedEvent() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.searchViewUsers.isFocused || binding.searchViewUsers.query.isNotEmpty() || binding.searchViewUsers.isInTouchMode)
+                if (binding.searchViewUsers.isIconified.not())
                     binding.searchViewUsers.onActionViewCollapsed()
                 else finish()
             }
 
         })
     }
+
 }

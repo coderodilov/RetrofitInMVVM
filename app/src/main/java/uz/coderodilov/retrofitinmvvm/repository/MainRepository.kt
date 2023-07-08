@@ -1,8 +1,5 @@
 package uz.coderodilov.retrofitinmvvm.repository
 
-import android.os.Handler
-import android.os.Looper
-import androidx.core.os.postDelayed
 import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +22,7 @@ class MainRepository {
     private val api = RetrofitClient.getRetrofit().create(ApiService::class.java)
 
     fun getUsersList(): MutableLiveData<ArrayList<User>> = usersList
-    fun getFilteredList() : MutableLiveData<ArrayList<User>> = filteredList
+    fun getFilteredList(): MutableLiveData<ArrayList<User>> = filteredList
 
     fun getAllUser() {
         api.getAllUsers().enqueue(object : Callback<List<User>> {
@@ -34,6 +31,7 @@ class MainRepository {
                     usersList.postValue(response.body() as ArrayList<User>)
                 }
             }
+
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 t.printStackTrace()
             }
@@ -67,7 +65,7 @@ class MainRepository {
                 if (response.isSuccessful) {
                     val resUser = response.body()!!
 
-                    usersList.value?.add(0,resUser)
+                    usersList.value?.add(0, resUser)
                     usersList.postValue(usersList.value)
                 }
             }
@@ -80,25 +78,25 @@ class MainRepository {
     }
 
 
-    fun updateUser(userId:String, user:User){
-        api.updateUser(userId, user).enqueue(object : Callback<User>{
+    fun updateUser(userId: String, user: User) {
+        api.updateUser(userId, user).enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
-               if (response.isSuccessful){
-                   val resUser = response.body()!!
+                if (response.isSuccessful) {
+                    val resUser = response.body()!!
 
-                   val index = usersList.value!!.indexOfFirst {
-                       it.id == userId.toInt()
-                   }
+                    val index = usersList.value!!.indexOfFirst {
+                        it.id == userId.toInt()
+                    }
 
-                   usersList.value!!.removeAt(index)
-                   usersList.value!!.add(index, resUser)
+                    usersList.value!!.removeAt(index)
+                    usersList.value!!.add(index, resUser)
 
-                   usersList.postValue(usersList.value)
-               }
+                    usersList.postValue(usersList.value)
+                }
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-               t.printStackTrace()
+                t.printStackTrace()
             }
 
         })
@@ -106,21 +104,19 @@ class MainRepository {
 
 
     fun searchUser(query: String) {
-       Handler(Looper.getMainLooper()).postDelayed(600){
-            api.searchUserByName(query).enqueue(object : Callback<List<User>> {
-                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                    if (response.isSuccessful){
-                        val resUser = response.body()
-                        filteredList.postValue(resUser as ArrayList<User>)
-                    }
+        api.searchUserByName(query).enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.isSuccessful) {
+                    val resUser = response.body()
+                    filteredList.postValue(resUser as ArrayList<User>)
                 }
+            }
 
-                override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                    t.printStackTrace()
-                }
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                t.printStackTrace()
+            }
 
-            })
-        }
+        })
     }
 
 }
